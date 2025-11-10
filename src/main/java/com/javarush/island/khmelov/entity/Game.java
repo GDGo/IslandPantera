@@ -13,5 +13,4 @@ public class Game {
     private final GameMap gameMap;
     private final Initialization entityFactory;
     private final View view;
-
 }
