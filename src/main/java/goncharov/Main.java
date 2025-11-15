@@ -1,18 +1,42 @@
 package goncharov;
 
-import goncharov.animals.Animal;
-import goncharov.animals.Plant;
-import goncharov.animals.predators.Wolf;
+
+import goncharov.animals.herbivores.*;
+import goncharov.animals.predators.*;
+
+import java.util.Arrays;
 
 public class Main {
-    public static void main(String[] args) {
-        Plant plant = new Plant();
-        System.out.println(plant.getType());
-        System.out.println(plant.getWeight());
-        System.out.println(plant.getMaxCountInCell());
-        System.out.println(plant.getClass());
+    public static void main(String[] args) throws Exception {
+        Island island = new Island(Config.WIDTH, Config.HEIGHT);
+        initializeOrganizm(island);
+    }
 
-        Animal wolf = new Wolf();
-        System.out.println(wolf);
+    public static void initializeOrganizm(Island island) throws NoSuchFieldException, IllegalAccessException {
+        for (int i = 0; i < 10; i++) { // Увеличили до 50
+            island.addOrganizm(new Rabbit(), randX(), randY());
+            island.addOrganizm(new Sheep(), randX(),randY());
+            island.addOrganizm(new Mouse(), randX(),randY());
+            island.addOrganizm(new Horse(), randX(),randY());
+            island.addOrganizm(new Goat(), randX(),randY());
+            island.addOrganizm(new Duck(), randX(),randY());
+            island.addOrganizm(new Deer(), randX(),randY());
+            island.addOrganizm(new Caterpillar(), randX(),randY());
+            island.addOrganizm(new Buffalo(), randX(),randY());
+            island.addOrganizm(new Boar(), randX(),randY());
+            island.addOrganizm(new Wolf(), randX(), randY());
+            island.addOrganizm(new Fox(), randX(),randY());
+            island.addOrganizm(new Eagle(), randX(),randY());
+            island.addOrganizm(new Boa(), randX(),randY());
+            island.addOrganizm(new Bear(), randX(),randY());
+        }
+    }
+
+    private static int randX() {
+        return (int) (Math.random() * Config.WIDTH);
+    }
+
+    private static int randY() {
+        return (int) (Math.random() * Config.HEIGHT);
     }
 }

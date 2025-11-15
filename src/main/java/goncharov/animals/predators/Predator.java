@@ -1,5 +1,6 @@
 package goncharov.animals.predators;
 
+import goncharov.TravelDirection;
 import goncharov.animals.Animal;
 
 public abstract class Predator extends Animal {
@@ -12,8 +13,9 @@ public abstract class Predator extends Animal {
     }
 
     @Override
-    public void move() {
-
+    public void move() throws NoSuchFieldException, IllegalAccessException {
+        TravelDirection travelDirection = TravelDirection.getRandomDirection();
+        move(travelDirection);
     }
 
     @Override
