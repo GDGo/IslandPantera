@@ -36,19 +36,21 @@ public abstract class Animal extends Organizm implements Runnable, Eating, Movab
 
     @Override
     public void run() {
-        try {
-            move();
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        if (isAlive()){
+            try {
+                move();
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            eat();
+            reproduce();
         }
-        eat();
-        reproduce();
     }
 
     @Override
     public String toString() {
-        return String.format("Организм: %s, адрес X: %s, адрес Y: %s", icon, location.getX(), location.getY());
+        return String.format("Организм: %s", icon);
     }
 }
