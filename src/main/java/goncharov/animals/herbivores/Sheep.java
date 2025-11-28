@@ -12,5 +12,4 @@ public class Sheep extends Herbivore {
     public Sheep() {
         super(name, icon, maxWeight, maxCountInCell, maxSpeed, maxFood);
     }
-
 }

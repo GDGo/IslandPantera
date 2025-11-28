@@ -4,17 +4,15 @@ package goncharov;
 import goncharov.animals.herbivores.*;
 import goncharov.animals.predators.*;
 
-import java.util.Arrays;
-
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Island island = new Island(Config.WIDTH, Config.HEIGHT);
         initializeOrganizm(island);
         island.startSimulation();
     }
 
-    public static void initializeOrganizm(Island island) throws NoSuchFieldException, IllegalAccessException {
-        for (int i = 0; i < 50; i++) { // Увеличили до 50
+    public static void initializeOrganizm(Island island) {
+        for (int i = 0; i < 500; i++) {
             island.addOrganizm(new Rabbit(), randX(), randY());
             island.addOrganizm(new Sheep(), randX(),randY());
             island.addOrganizm(new Mouse(), randX(),randY());

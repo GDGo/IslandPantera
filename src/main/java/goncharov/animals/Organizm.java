@@ -1,12 +1,13 @@
 package goncharov.animals;
 
 import goncharov.LocationOrganizm;
+import goncharov.api.Died;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public abstract class Organizm {
+public abstract class Organizm implements Died {
     private final String type = this.getClass().getSimpleName();
     private final double weight;
     private final int maxCountInCell;
@@ -17,12 +18,5 @@ public abstract class Organizm {
         this.weight = weight;
         this.maxCountInCell = maxCountInCell;
         this.isAlive = true;
-    }
-
-    public void die(){
-        isAlive = false;
-        if (location != null){
-            location.removeUnit(this);
-        }
     }
 }

@@ -4,6 +4,7 @@ import goncharov.animals.Animal;
 import goncharov.animals.Organizm;
 import goncharov.animals.herbivores.*;
 import goncharov.animals.predators.*;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -11,17 +12,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-
+@Getter
 public class Island {
     private final LocationOrganizm[][] grid;
     private final ScheduledExecutorService executor;
     private Map<Class<? extends Organizm>, Long> previousOrganizm = new HashMap<>();
-    private Map<String, String> organizmIcon = new HashMap<>();
+    private final Map<String, String> organizmIcon = new HashMap<>();
     private final List<Class<? extends Organizm>> allOrganizmClasses = Arrays.asList(
             Wolf.class, Boa.class, Fox.class, Bear.class, Eagle.class,
             Horse.class, Deer.class, Rabbit.class, Mouse.class, Goat.class,
             Sheep.class, Boar.class, Buffalo.class, Duck.class, Caterpillar.class
     );
+    private long previousPlants = 0;
 
     public Island(int width, int height) {
         this.executor = Executors.newScheduledThreadPool(3);
@@ -34,14 +36,17 @@ public class Island {
     }
 
     public void startSimulation() {
+        executor.scheduleAtFixedRate(this::growPlants, 0,
+                10000, TimeUnit.MILLISECONDS);
+
         executor.scheduleAtFixedRate(this::processAnimals, 0,
-                500, TimeUnit.MILLISECONDS);
+                2000, TimeUnit.MILLISECONDS);
 
         executor.scheduleAtFixedRate(this::printStats, 0,
-                1000, TimeUnit.MILLISECONDS);
+                5000, TimeUnit.MILLISECONDS);
     }
 
-    public void addOrganizm(Animal organizm, int x, int y) throws NoSuchFieldException, IllegalAccessException {
+    public void addOrganizm(Animal organizm, int x, int y) {
         if (organizm == null) return;
 
         if (x >= 0 && x < Config.WIDTH && y >= 0 && y < Config.HEIGHT) {
@@ -49,10 +54,15 @@ public class Island {
             if (location.canAddOrganizm(organizm.getClass())) {
                 location.addOrganizm(organizm);
                 organizm.setLocation(location);
-                location.getOrganizms();
                 organizmIcon.put(organizm.getClass().getSimpleName(), organizm.getIcon());
             }
         }
+    }
+
+    private void growPlants() {
+        Arrays.stream(grid).flatMap(Arrays::stream).forEach(loc ->
+                loc.getPlant().grow()
+        );
     }
 
     public LocationOrganizm getLocation(int x, int y) {
@@ -68,6 +78,7 @@ public class Island {
                 .mapToLong(loc -> loc.getOrganizms().size())
                 .sum();
     }
+
     private void processAnimals() {
         Arrays.stream(grid)
                 .flatMap(Arrays::stream)
@@ -75,7 +86,7 @@ public class Island {
                     List<Animal> animals = loc.getOrganizms();
                     // Обрабатываем только живых животных
                     animals.stream()
-                            .filter(Organizm::isAlive)
+                            .filter(Animal::isAlive)
                             .forEach(animal -> {
                                 animal.run();
                             });
@@ -92,7 +103,12 @@ public class Island {
                         Collectors.counting()
                 ));
 
-        System.out.println("\n=== Статистика острова ===");
+        long currentPlants = Arrays.stream(grid)
+                .flatMap(Arrays::stream)
+                .mapToInt(loc -> loc.getPlant().getQuantity())
+                .sum();
+
+        System.out.println("\n=== Статистика ===");
 
         Map<Class<? extends Organizm>, Long> fullStats = new LinkedHashMap<>();
         for (Class<? extends Organizm> clazz : allOrganizmClasses) {
@@ -114,6 +130,12 @@ public class Island {
             System.out.printf(" %-3s %-12s: %-4d%s%n", organizmIcon.get(className), className, count, diff);
         });
 
+        String plantDiff = previousPlants != 0 ?
+                String.format(" (%+d)", currentPlants - previousPlants) : "";
+        System.out.printf("Растения: %d%s%n", currentPlants, plantDiff);
+        System.out.println("========================");
+
         previousOrganizm = new HashMap<>(fullStats);
+        previousPlants = currentPlants;
     }
 }

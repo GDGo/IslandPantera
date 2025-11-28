@@ -1,6 +1,6 @@
 package goncharov.api;
 
 @FunctionalInterface
-public interface Movable {
-    void move();
+public interface Died {
+    void die();
 }

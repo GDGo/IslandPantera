@@ -5,6 +5,7 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class Config {
     public final static int WIDTH = 100;
     public final static int HEIGHT = 100;
